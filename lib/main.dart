@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:e_amarseba_verify/screens/face_verify.dart';
 import 'package:e_amarseba_verify/screens/scanner_screen.dart';
+import 'package:face_camera/face_camera.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FaceCamera.initialize();
   runApp(const MyApp());
 }
 
@@ -16,27 +17,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'E-Amarseba User Live Image',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
-      onGenerateRoute: (settings) {
-        if (settings.name == '/face-verify') {
-          final args = settings.arguments as Map<String, String>;
-          return MaterialPageRoute(
-            builder: (context) {
-              return FaceVerifyScreen(
-                username: args['username']!,
-                code: args['code']!,
-              );
-            },
-          );
-        }
-
-        // Add more routes here as needed
-        // Default route (home)
-        return MaterialPageRoute(builder: (context) => const QRViewExample());
-      },
+      // initialRoute: '/face-verify',
+      // home: const QRScannerPage(),
+      home: const QRScannerPage(),
     );
   }
 }

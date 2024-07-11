@@ -1,16 +1,18 @@
 import 'dart:convert';
 import 'package:e_amarseba_verify/screens/face_verify.dart';
+import 'package:e_amarseba_verify/widgets/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRViewExample extends StatefulWidget {
-  const QRViewExample({super.key});
+class QRScannerPage extends StatefulWidget {
+  const QRScannerPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _QRViewExampleState();
+  State<StatefulWidget> createState() => _QRScannerPageState();
 }
 
-class _QRViewExampleState extends State<QRViewExample> {
+class _QRScannerPageState extends State<QRScannerPage> {
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
@@ -23,21 +25,94 @@ class _QRViewExampleState extends State<QRViewExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Color(0xFF008645),
+              ),
+              child: Text(
+                'অপশনসমূহ',
+                style: banglaFontStyle.copyWith(fontSize: 28),
+              ),
+            ),
+            
+            ListTile(
+              title: Text('প্রাইভেসি পলিসি', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),),
+              onTap: () {
+                // alert dialog to show the privacy policy
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('প্রাইভেসি পলিসি', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 24), textAlign: TextAlign.center,),
+                      content: Text('এই গোপনীয়তা নীতি বর্ণনা করে কিভাবে e-amarseba.com ওয়েবসাইট এবং সম্পর্কিত অ্যাপ্লিকেশন (“সাইট”, “আমরা” বা “আমাদের”) এই সাইটের মাধ্যমে আমরা যে ব্যক্তিগত তথ্য সংগ্রহ করি তা সংগ্রহ, ব্যবহার, শেয়ার এবং সুরক্ষা করে। এই নীতিটি আমাদের মোবাইল অ্যাপ্লিকেশন ও ওয়েবসাইটের ক্ষেত্রেও প্রযোজ্য যা আমরা আমাদের সেবা এবং সাইটের টিম নির্দিষ্ট পৃষ্ঠাগুলির সাথে ব্যবহারের জন্য প্রদান করি। এই সাইট ব্যবহার করে আপনি এই গোপনীয়তা নীতি সাথে সম্মত হন।', style: banglaFontStyle.copyWith(color: Colors.black), textAlign: TextAlign.justify,),
+                      actions: [
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF008645)),
+                            onPressed: () => Navigator.of(context).pop(), 
+                            child: Text('বন্ধ করুন', style: banglaFontStyle.copyWith(fontSize: 20),)
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+            ListTile(
+              title: Text('এপ্লিকেশন সম্পর্কে', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('এপ্লিকেশন সম্পর্কে', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 24), textAlign: TextAlign.center,),
+                      content: Text('আপনি যদি “আমার সেবা” (www.e-amarseba.com) নামক ওয়েবসাইটের ব্যবহারকারী হয়ে থাকেন তাহলে ইউজার প্রোফাইল ছবি আপলোড করতে চাইলে এই এ্যাপটি ব্যবহার করতে হবে। কারণ আমার সেবার প্রোফাইলে পুরাতন কোন ছবিকে প্রোফাইল ছবি হিসেবে ব্যবহার করা যাবেনা। এমনকি ছবির স্থানে নিজের ছবি ছাড়া অন্য কোন বস্তু বা ডিজাইন ব্যবহার করা যাবেনা।', style: banglaFontStyle.copyWith(color: Colors.black), textAlign: TextAlign.justify,),
+                      actions: [
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF008645), elevation: 3,),
+                            onPressed: () => Navigator.of(context).pop(), 
+                            child: Text('বন্ধ করুন', style: banglaFontStyle.copyWith(fontSize: 20),)
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      
+      ),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF048B3F),
-        title: const Text('Live Capture', style: TextStyle(color: Colors.white)),
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFF008645),
+        title: const Text('Live Image', style: TextStyle(color: Colors.white)),
         actions: [
-          IconButton(
-            onPressed: () {
-              // open the drawer
-            },
-            icon: const Icon(Icons.more_vert, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: GestureDetector(
+              onTap: () {
+                // open the drawer
+                _scaffoldKey.currentState?.openDrawer();
+                // _scaffoldKey.currentState!.openDrawer();
+              },
+              child: const Icon(Icons.more_vert, color: Colors.white, size: 25,),
+            ),
           ),
         ],
       ),
       body: Column(
         children: [
           Expanded(flex: 5, child: _buildQrView(context)),
+          // const Expanded(flex: 5, child: Center(child: Text("Flutter app"),)),
           Expanded(
             flex: 1,
             child: Container(
@@ -46,15 +121,12 @@ class _QRViewExampleState extends State<QRViewExample> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (result != null)
-                    Text('Data: ${result!.code}')
-                  else
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -130,7 +202,7 @@ class _QRViewExampleState extends State<QRViewExample> {
           final data = jsonDecode(result!.code!);
           if (data.containsKey('username') && data.containsKey('code')) {
             controller.dispose(); // Ensure the camera is released
-            await Future.delayed(const Duration(milliseconds: 100));
+            await Future.delayed(const Duration(milliseconds: 750));
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -142,12 +214,12 @@ class _QRViewExampleState extends State<QRViewExample> {
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Invalid QR code')),
+              const SnackBar(content: Text('ভুল QR কোড')),
             );
           }
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid QR code format')),
+            const SnackBar(content: Text('ভুল QR কোড ফরম্যাট')),
           );
         }
       }
