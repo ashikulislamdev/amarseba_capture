@@ -24,6 +24,7 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
   void initState() {
     super.initState();
     controller = FaceCameraController(
+      enableAudio: false,
       defaultCameraLens: CameraLens.front,
       onCapture: (File? image) {
         setState(() => _capturedImage = image);

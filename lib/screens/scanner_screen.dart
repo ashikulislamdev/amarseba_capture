@@ -29,6 +29,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     } else {
       debugPrint("onPermissionSet called");
       _onQRCapture(ctrl);
+      setState(() {});
     }
   }
 
