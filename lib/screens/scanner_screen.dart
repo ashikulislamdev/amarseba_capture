@@ -21,6 +21,59 @@ class _QRScannerPageState extends State<QRScannerPage> {
   bool isFlashOn = false;
   bool isFrontCamera = false;
 
+  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+    if (!p) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No Permission')),
+      );
+    } else {
+      debugPrint("onPermissionSet called");
+      _onQRCapture(ctrl);
+    }
+  }
+
+  void _onQRViewCreated(QRViewController controller) {}
+
+  _onQRCapture(QRViewController ctrl) {
+    ctrl.scannedDataStream.listen((scanData) async {
+      try {
+        final sScanData = scanData.code;
+        if (sScanData == null) {
+          debugPrint("scanData is null");
+          return;
+        }
+        final data = jsonDecode(scanData.code!);
+        if (data.containsKey('username') && data.containsKey('code')) {
+          // ctrl.dispose(); // Ensure the camera is released
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FaceVerifyScreen(
+                username: data['username'],
+                code: data['code'],
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('ভুল QR কোড $data')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('ভুল QR কোড ফরম্যাট $e')),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,24 +92,39 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 style: banglaFontStyle.copyWith(fontSize: 28),
               ),
             ),
-            
             ListTile(
-              title: Text('প্রাইভেসি পলিসি', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),),
+              title: Text(
+                'প্রাইভেসি পলিসি',
+                style:
+                    banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),
+              ),
               onTap: () {
                 // alert dialog to show the privacy policy
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('প্রাইভেসি পলিসি', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 24), textAlign: TextAlign.center,),
-                      content: Text('এই গোপনীয়তা নীতি বর্ণনা করে কিভাবে e-amarseba.com ওয়েবসাইট এবং সম্পর্কিত অ্যাপ্লিকেশন (“সাইট”, “আমরা” বা “আমাদের”) এই সাইটের মাধ্যমে আমরা যে ব্যক্তিগত তথ্য সংগ্রহ করি তা সংগ্রহ, ব্যবহার, শেয়ার এবং সুরক্ষা করে। এই নীতিটি আমাদের মোবাইল অ্যাপ্লিকেশন ও ওয়েবসাইটের ক্ষেত্রেও প্রযোজ্য যা আমরা আমাদের সেবা এবং সাইটের টিম নির্দিষ্ট পৃষ্ঠাগুলির সাথে ব্যবহারের জন্য প্রদান করি। এই সাইট ব্যবহার করে আপনি এই গোপনীয়তা নীতি সাথে সম্মত হন।', style: banglaFontStyle.copyWith(color: Colors.black), textAlign: TextAlign.justify,),
+                      title: Text(
+                        'প্রাইভেসি পলিসি',
+                        style: banglaFontStyle.copyWith(
+                            color: Colors.black, fontSize: 24),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: Text(
+                        'এই গোপনীয়তা নীতি বর্ণনা করে কিভাবে e-amarseba.com ওয়েবসাইট এবং সম্পর্কিত অ্যাপ্লিকেশন (“সাইট”, “আমরা” বা “আমাদের”) এই সাইটের মাধ্যমে আমরা যে ব্যক্তিগত তথ্য সংগ্রহ করি তা সংগ্রহ, ব্যবহার, শেয়ার এবং সুরক্ষা করে। এই নীতিটি আমাদের মোবাইল অ্যাপ্লিকেশন ও ওয়েবসাইটের ক্ষেত্রেও প্রযোজ্য যা আমরা আমাদের সেবা এবং সাইটের টিম নির্দিষ্ট পৃষ্ঠাগুলির সাথে ব্যবহারের জন্য প্রদান করি। এই সাইট ব্যবহার করে আপনি এই গোপনীয়তা নীতি সাথে সম্মত হন।',
+                        style: banglaFontStyle.copyWith(color: Colors.black),
+                        textAlign: TextAlign.justify,
+                      ),
                       actions: [
                         Center(
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF008645)),
-                            onPressed: () => Navigator.of(context).pop(), 
-                            child: Text('বন্ধ করুন', style: banglaFontStyle.copyWith(fontSize: 20),)
-                          ),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF008645)),
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(
+                                'বন্ধ করুন',
+                                style: banglaFontStyle.copyWith(fontSize: 20),
+                              )),
                         ),
                       ],
                     );
@@ -65,21 +133,39 @@ class _QRScannerPageState extends State<QRScannerPage> {
               },
             ),
             ListTile(
-              title: Text('এপ্লিকেশন সম্পর্কে', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),),
+              title: Text(
+                'এপ্লিকেশন সম্পর্কে',
+                style:
+                    banglaFontStyle.copyWith(color: Colors.black, fontSize: 20),
+              ),
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('এপ্লিকেশন সম্পর্কে', style: banglaFontStyle.copyWith(color: Colors.black, fontSize: 24), textAlign: TextAlign.center,),
-                      content: Text('আপনি যদি “আমার সেবা” (www.e-amarseba.com) নামক ওয়েবসাইটের ব্যবহারকারী হয়ে থাকেন তাহলে ইউজার প্রোফাইল ছবি আপলোড করতে চাইলে এই এ্যাপটি ব্যবহার করতে হবে। কারণ আমার সেবার প্রোফাইলে পুরাতন কোন ছবিকে প্রোফাইল ছবি হিসেবে ব্যবহার করা যাবেনা। এমনকি ছবির স্থানে নিজের ছবি ছাড়া অন্য কোন বস্তু বা ডিজাইন ব্যবহার করা যাবেনা।', style: banglaFontStyle.copyWith(color: Colors.black), textAlign: TextAlign.justify,),
+                      title: Text(
+                        'এপ্লিকেশন সম্পর্কে',
+                        style: banglaFontStyle.copyWith(
+                            color: Colors.black, fontSize: 24),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: Text(
+                        'আপনি যদি “আমার সেবা” (www.e-amarseba.com) নামক ওয়েবসাইটের ব্যবহারকারী হয়ে থাকেন তাহলে ইউজার প্রোফাইল ছবি আপলোড করতে চাইলে এই এ্যাপটি ব্যবহার করতে হবে। কারণ আমার সেবার প্রোফাইলে পুরাতন কোন ছবিকে প্রোফাইল ছবি হিসেবে ব্যবহার করা যাবেনা। এমনকি ছবির স্থানে নিজের ছবি ছাড়া অন্য কোন বস্তু বা ডিজাইন ব্যবহার করা যাবেনা।',
+                        style: banglaFontStyle.copyWith(color: Colors.black),
+                        textAlign: TextAlign.justify,
+                      ),
                       actions: [
                         Center(
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF008645), elevation: 3,),
-                            onPressed: () => Navigator.of(context).pop(), 
-                            child: Text('বন্ধ করুন', style: banglaFontStyle.copyWith(fontSize: 20),)
-                          ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF008645),
+                                elevation: 3,
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(
+                                'বন্ধ করুন',
+                                style: banglaFontStyle.copyWith(fontSize: 20),
+                              )),
                         ),
                       ],
                     );
@@ -89,7 +175,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
             ),
           ],
         ),
-      
       ),
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -104,7 +189,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 _scaffoldKey.currentState?.openDrawer();
                 // _scaffoldKey.currentState!.openDrawer();
               },
-              child: const Icon(Icons.more_vert, color: Colors.white, size: 25,),
+              child: const Icon(
+                Icons.more_vert,
+                color: Colors.white,
+                size: 25,
+              ),
             ),
           ),
         ],
@@ -123,17 +212,25 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                    child: Text(
+                        'দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'NikoshBAN')),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
                           onTap: () async {
                             await controller?.toggleFlash();
-                            bool? flashStatus = await controller?.getFlashStatus();
+                            bool? flashStatus =
+                                await controller?.getFlashStatus();
                             setState(() {
                               isFlashOn = flashStatus ?? false;
                             });
@@ -154,7 +251,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
                           },
                           child: CircleAvatar(
                             child: Icon(
-                              isFrontCamera ? Icons.cameraswitch : Icons.cameraswitch_outlined,
+                              isFrontCamera
+                                  ? Icons.cameraswitch
+                                  : Icons.cameraswitch_outlined,
                             ),
                           ),
                         ),
@@ -186,57 +285,5 @@ class _QRScannerPageState extends State<QRScannerPage> {
           cutOutSize: scanArea),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
-  }
-
-  void _onQRViewCreated(QRViewController controller) async{
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) async {
-      setState(() {
-        result = scanData;
-      });
-
-      if (result != null) {
-        try {
-          final data = jsonDecode(result!.code!);
-          if (data.containsKey('username') && data.containsKey('code')) {
-            controller.dispose(); // Ensure the camera is released
-            await Future.delayed(const Duration(milliseconds: 750));
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FaceVerifyScreen(
-                  username: data['username'],
-                  code: data['code'],
-                ),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('ভুল QR কোড')),
-            );
-          }
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('ভুল QR কোড ফরম্যাট')),
-          );
-        }
-      }
-    });
-  }
-
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No Permission')),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
   }
 }

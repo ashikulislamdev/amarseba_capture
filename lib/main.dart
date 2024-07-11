@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // initialRoute: '/face-verify',
-      // home: const QRScannerPage(),
       home: const QRScannerPage(),
+      // home: const QRScannerPage(),
     );
   }
 }
