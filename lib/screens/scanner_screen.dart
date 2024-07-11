@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:e_amarseba_verify/screens/face_verify.dart';
 import 'package:e_amarseba_verify/widgets/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRScannerPage extends StatefulWidget {
@@ -20,6 +19,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   bool isFlashOn = false;
   bool isFrontCamera = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -121,10 +121,16 @@ class _QRScannerPageState extends State<QRScannerPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
-                  ),
+                  if (result != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('QR কোড: ${result!}', style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                    )
+                  else
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: Row(

@@ -8,25 +8,39 @@ class SuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
-        SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-      },
-      child: const Scaffold(
+      child: Scaffold(
         body: Center(
         child: Padding(
-          padding: EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             
             children: [
-              Text(
+              Image.asset('assets/icons/amarseba.png'),
+              const SizedBox(height: 60),
+              const Text(
                 'ছবি সফলভাবে আপলোড করা হয়েছে',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'NikoshBAN'),
               ),
           
-              Text(
+              const Text(
                 'আমার সেবার সাথে থাকার জন্য ধন্যবাদ',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'NikoshBAN'),
+              ),
+              const SizedBox(height: 60),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+                child: const Text(
+                  'বন্ধ করুন',
+                  style: TextStyle(fontSize: 22, fontFamily: 'NikoshBAN', color: Colors.white),
+                ),
               ),
             ],
           ),

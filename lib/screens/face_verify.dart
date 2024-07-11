@@ -23,6 +23,7 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
   void initState() {
     controller = FaceCameraController(
       defaultCameraLens: CameraLens.front,
+
       onCapture: (File? image) {
         setState(() => _capturedImage = image);
       },
@@ -94,17 +95,8 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
               if (_capturedImage != null) {
                 return Center(
                   child: Stack(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.center,
                     children: [
-                      if (_isUploading)
-                        Positioned(
-                          top: 0,
-                          left: 0,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      
                       Image.file(
                         _capturedImage!,
                         width: double.maxFinite,
@@ -114,7 +106,7 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton(
-                            onPressed: () async {
+                            onPressed: _isUploading ? null : () async {
                               await controller.startImageStream();
                               setState(() => _capturedImage = null);
                             },
@@ -130,7 +122,7 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
                           ),
                           const SizedBox(width: 10),
                           ElevatedButton(
-                            onPressed: _sendDataToServer,
+                            onPressed: _isUploading ? null : _sendDataToServer,
                             child: Text(
                               'আপলোড',
                               textAlign: TextAlign.center,
@@ -144,7 +136,21 @@ class _FaceVerifyScreenState extends State<FaceVerifyScreen> {
                         ],
                       ),
 
-                      
+                      if (_isUploading)
+                        Positioned(
+                          child: Container(
+                            color: Colors.black45,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+                      if (_isUploading)
+                        const IgnorePointer(
+                          ignoring: true,
+                        ),
+
+                      // communcation is not easy, you must be humble, use the sympathy
                     ],
                   ),
                 );
