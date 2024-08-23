@@ -121,16 +121,16 @@ class _QRScannerPageState extends State<QRScannerPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (result != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('QR কোড: ${result!}', style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
-                    )
-                  else
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
-                    ),
+                  // if (result != null)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 12),
+                  //     child: Text('QR কোড: ${result!}', style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                  //   )
+                  // else
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text('দয়া করে e-amarseba.com থেকে QR Code স্ক্যান করুন', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 18, fontFamily: 'NikoshBAN')),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
                     child: Row(
