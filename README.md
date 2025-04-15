@@ -1,16 +1,22 @@
-# e_amarseba_verify
+# 📱E-Amarseba User Verification App
 
-A new Flutter project.
+A Flutter-based face verification app designed for **secure profile updates** through **real-time facial capture** and **QR code validation**. This app is developed for the [E-Amarseba](https://e-amarseba.com) platform to help users verify their identity in a simple, secure, and user-friendly way.
 
-## Getting Started
+## ✨ Features
 
-This project is a starting point for a Flutter application.
+- 🔍 Scan and verify via **QR code**
+- 📷 Real-time **face detection** with the front camera
+- 📤 **Upload captured photo** to the server for user verification
+- ⚡ Lightweight and fast performance
+- 🔐 Designed with **user privacy** and security in mind
+- 🌐 Supports multiple Android architectures with split APKs
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+To run this project locally:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+git clone https://github.com/ashikulislamdev/amarseba_capture.git
+cd amarseba_capture
+flutter pub get
+flutter run
